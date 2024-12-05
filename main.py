@@ -1,5 +1,6 @@
 import turtle
 
+
 window = turtle.Screen()
 window.setup(0.5, 0.75)
 window.bgcolor(0.2, 0.2, 0.2)
@@ -29,5 +30,17 @@ cannon.turtlesize(0.8, 0.3)  # Tip of cannon
 cannon.stamp()
 cannon.sety(FLOOR_LEVEL)
 
+CANNON_STEP = 10
+
+def move_left():
+    cannon.setx(cannon.xcor() - CANNON_STEP)
+
+def move_right():
+    cannon.setx(cannon.xcor() + CANNON_STEP)
+
+window.onkeypress(move_left, "Left")
+window.onkeypress(move_right, "Right")
+window.onkeypress(turtle.bye, "q")
+window.listen()
 
 turtle.done()
