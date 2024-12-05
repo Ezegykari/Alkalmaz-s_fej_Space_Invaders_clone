@@ -3,6 +3,8 @@ import time
 import turtle
 
 
+CANNON_STEP = 3
+
 window = turtle.Screen()
 window.tracer(0)
 window.setup(0.5, 0.75)
@@ -22,6 +24,7 @@ cannon.penup()
 cannon.color(1, 1, 1)
 cannon.shape("square")
 cannon.setposition(0, FLOOR_LEVEL)
+cannon.cannon_movement = 0  # -1, 0 or 1 for left, stationary, right
 
 # Create turtle for writing text
 text = turtle.Turtle()
@@ -71,11 +74,13 @@ def create_alien():
     aliens.append(alien)
 
 def move_left():
+    cannon.cannon_movement = -1
     new_x = cannon.xcor() - CANNON_STEP
     if new_x >= LEFT + GUTTER:
         cannon.setx(new_x)
         draw_cannon()
 def move_right():
+    cannon.cannon_movement = 1
     new_x = cannon.xcor() + CANNON_STEP
     if new_x <= RIGHT - GUTTER:
         cannon.setx(new_x)
@@ -131,6 +136,11 @@ while game_running:
         f"Time: {time_elapsed:5.1f}s\nScore: {score:5}",
         font=("Courier", 20, "bold"),
     )
+    # Move cannon
+    new_x = cannon.xcor() + CANNON_STEP * cannon.cannon_movement
+    if LEFT + GUTTER <= new_x <= RIGHT - GUTTER:
+        cannon.setx(new_x)
+        draw_cannon()
     # Move all lasers
     for laser in lasers:
         move_laser(laser)
