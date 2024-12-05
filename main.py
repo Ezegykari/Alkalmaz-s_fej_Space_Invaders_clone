@@ -21,6 +21,8 @@ cannon.color(1, 1, 1)
 cannon.shape("square")
 cannon.setposition(0, FLOOR_LEVEL)
 
+lasers = []
+
 def draw_cannon():
     window.update()
     cannon.clear()
@@ -35,6 +37,8 @@ def draw_cannon():
     cannon.sety(FLOOR_LEVEL)
 
 CANNON_STEP = 10
+LASER_LENGTH = 20
+LASER_SPEED = 10
 
 def move_left():
     new_x = cannon.xcor() - CANNON_STEP
@@ -47,11 +51,47 @@ def move_right():
         cannon.setx(new_x)
         draw_cannon()
 
+def create_laser():
+    laser = turtle.Turtle()
+    laser.penup()
+    laser.color(1, 0, 0)
+    laser.hideturtle()
+    laser.setposition(cannon.xcor(), cannon.ycor())
+    laser.setheading(90)
+    # Move laser to just above cannon tip
+    laser.forward(20)
+    # Prepare to draw the laser
+    laser.pendown()
+    laser.pensize(5)
+
+    lasers.append(laser)
+
+def move_laser(laser):
+    laser.clear()
+    laser.forward(LASER_SPEED)
+    # Draw the laser
+    laser.forward(LASER_LENGTH)
+    laser.forward(-LASER_LENGTH)
+
 window.onkeypress(move_left, "Left")
 window.onkeypress(move_right, "Right")
+window.onkeypress(create_laser, "space")
 window.onkeypress(turtle.bye, "q")
 window.listen()
 
 draw_cannon()
+
+# Game loop
+while True:
+    # Move all lasers
+    for laser in lasers:
+        move_laser(laser)
+        # Remove laser if it goes off screen
+        if laser.ycor() > TOP:
+            laser.clear()
+            laser.hideturtle()
+            lasers.remove(laser)
+            turtle.turtles().remove(laser)
+    window.update()
 
 turtle.done()
